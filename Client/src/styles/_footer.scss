@@ -1,0 +1,37 @@
+@use '../styles' as *;
+
+.footer {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 2em;
+    img{
+      width: 6em;
+      margin: 2em;
+    }
+    h1{
+        font-weight: 700;
+        margin:0.3em;
+    }
+    p{
+        font-size: 1.2em;
+        color: aliceblue;
+        margin-top: 1em;
+    }
+    .mailto{
+        color: white;
+        font-weight: 700;
+        font-size: 1.2em;
+        @include secondary;
+        padding: 1em 3.5em;
+        display: block;
+        width: 15em;
+        margin: 2em auto;
+    }
+    
+        
+        a img{
+            width: 2.5em;
+        }
+    
+  }

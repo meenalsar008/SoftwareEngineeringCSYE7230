@@ -1,0 +1,90 @@
+@use '../styles' as *;
+
+.LandingHeader{
+    text-align: center;
+    background-image: url(../images/bgimg.png);
+    background-position: center;
+    background-size: cover;
+    color: white;
+    .logo{
+        width: 6em;
+        margin-top: 4em;
+        margin-bottom: 1em;
+    }
+    h1{
+        font-weight: 700;
+        margin:0.3em;
+    }
+    p{
+        width: 60%;
+        font-size: 1.15em;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 4em;
+    }
+    input{
+        border: none;
+        width: 80%;
+        padding: 1.2em 1.5em;
+        border-start-start-radius: 8px;
+        border-end-start-radius:8px ;
+    }
+
+    .searchbar{
+        transform: translateY(30px);
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+        width: 40em; 
+        box-shadow: rgba(0, 0, 0, 0.125) 0px 15px 40px;
+        border-radius: 8px;
+        button{
+            background-color: $primary;
+            font-weight: 700;
+            font-size: 1.05em;
+            cursor: pointer;
+            width: 10em;
+            border-end-end-radius:8px;
+            border-start-end-radius: 8px;
+        }
+    }
+}
+
+@media only screen and (max-width:767px){
+    .LandingHeader{
+        .logo{
+            width: 5em;
+        }
+        p{
+            width: 80%;
+            font-size: 0.9em;
+        }
+
+        .searchbar{
+            width: 25em;
+            button{
+                width: 8em;
+            }
+        }
+
+        input{
+        width: 90%;
+        padding: 1em 1.2em;
+        }
+    }
+    
+}
+
+@media only screen and (max-width:400px){
+    .LandingHeader{
+        .searchbar{
+            width: 18em;
+            button{
+                width: 7em;
+            }
+        }
+        input{
+            padding: 0.8em 1.2em;
+        }
+    }
+}

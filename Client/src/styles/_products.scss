@@ -1,0 +1,137 @@
+@use '../styles' as *;
+
+.products{
+    h1{
+        @include sectionTitle;
+        margin-bottom: 1em;
+    }
+    .productCards{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .btn{
+        margin-right: 0.3em;
+        margin-bottom: 2em;
+    }
+    .btnprimary{
+        background-color: rgb(235, 235, 235);
+        font-weight: 700;
+        padding: 0.5em 1.5em;
+        border-radius: 50px;
+    }
+    .btnsecondary{
+        background-color: $primary;
+        color: white;
+        font-weight: 700;
+        padding: 0.5em 1.5em;
+        border-radius: 50px;
+    }
+
+    .prodcard{
+        width: 18em;
+        transition: all ease 0.7s;
+        &:hover{
+            transform: scale(1.1);
+        }
+    }
+    .border-product {
+        padding: 1em;
+        border-radius: 5px;
+      }
+      .shopBack {
+        width: fit-content;
+        background-color: $bgcolor;
+        padding: 2.8em 1.5em;
+        border-radius: 8px;
+        img{
+            width: 13em;
+        }
+      }
+
+    
+    .shoptext {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5em;
+    img{
+        width: 1.8em;
+        margin-left: 0.3em;
+    }
+    .rating{
+        display: flex;
+        align-items: center;
+        flex-direction: row-reverse;
+        p{
+            font-size: 1.1em;
+            margin-top: 0.4em;
+        }
+    }
+    }
+  .shoptext p{
+    font-size: 1.1em;
+    font-weight: 600;
+  }
+  h3 {
+    font-weight: 900;
+    font-size: 1.5em;
+    margin-top: 0em;
+  }
+
+}
+
+@media only screen and (max-width:767px){
+    .products{
+        text-align: center;
+        .btn{
+            margin-bottom: 1em;
+        }
+        .prodcard{
+            width: 14em;
+            margin-right: 1em;
+        }
+        .container{
+            max-width: 100%;
+        }
+        .shopBack {
+            padding: 2em 1em;
+            border-radius: 8px;
+            img{
+                width: 10em;
+            }
+          }
+        .shoptext p{
+            font-size: 1em;
+            font-weight: 600;
+            text-align: left;
+          }
+          h3 {
+            font-weight: 800;
+            font-size: 1.4em;
+            margin-top: 0em;
+            text-align: left;
+          }
+}
+
+}
+
+@media only screen and (max-width:400px){
+    .products{
+        .shopBack {
+            padding: 2.2em 1.2em;
+            border-radius: 8px;
+            img{
+                width: 12em;
+            }
+          }
+        .shoptext p{
+            font-size: 1em;
+            font-weight: 600;
+            text-align: left;
+          }
+          h3 {
+            font-weight: 800;
+            font-size: 1.4em;
+          }
+    }
+}

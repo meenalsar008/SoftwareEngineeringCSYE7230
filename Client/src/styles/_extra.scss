@@ -1,0 +1,136 @@
+@use '../styles' as *;
+
+.extras{
+    .title{
+        @include sectionTitle;
+        margin: 0.1em 0em;
+        margin-bottom: 2em;
+        text-align: center;
+    }
+    .cards{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content:space-around ;
+    }
+    .Card{
+        height: 23em;
+        width: 16.5em;
+        border-radius: 8px;
+        margin-bottom: 2em;
+        .header{
+            height: 45%;
+            padding: 2em;
+            border-start-start-radius: 10px;
+            border-start-end-radius: 10px;
+            p{
+                font-size: 1em;
+                font-weight: 600;
+            }
+            h1{
+                font-weight: 800;
+            }
+        }
+        .imgbg{
+            height: 55%;
+            img{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-end-start-radius: 10px;
+            border-end-end-radius: 10px;
+            }
+        }
+        
+    }
+
+    .card1 .header{
+            color: #266c00;
+            background-color: #c0ffd2;
+    }
+    .card2 .header{
+            color: rgb(132, 112, 0);
+            background-color: rgb(255, 243, 200);
+    }
+    .card3 .header{
+        color: #67003b;
+        background-color: #ffa5d8;
+    }
+    .card4 .header{
+        color: rgb(147, 61, 0);
+        background-color: #ffe4c8;
+    }
+
+    .assistant{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-image: linear-gradient(#c0000a, #e9000c);
+        margin-top: 5em;
+        border-radius: 25px;
+        padding: 4em 5em;
+        margin-bottom: 5em;
+        img{
+            width: 9em;
+            animation: MoveUpDown 1.8s linear .1s infinite;
+            position: relative;
+        }
+        @keyframes MoveUpDown {
+            0%, 100% {
+              bottom: 0px;
+            }
+            50% {
+              bottom: 30px;
+            }
+          }
+        .content{
+            color: white;
+            h1{
+                font-weight: 800;
+            }
+            p{
+                font-size: 1.2em;
+                width: 80%;
+                margin-top: 1em;
+                margin-bottom: 2em;
+                color: #ffa7ac;
+                font-weight: 700;
+                
+            }
+            button{
+                @include secondary;
+                padding: 0.8em 2.5em;
+                background-color: rgb(97, 29, 0);
+            }
+        }
+    }
+}
+
+@media only screen and (max-width:767px){
+    .extras{
+        .Card{
+            height: 20em;
+            width: 14em;
+            .header{
+                height: 50%;
+            }
+            .imgbg{
+                height: 50%;
+            }
+        }
+    .assistant{
+            flex-direction: column-reverse;
+            text-align: center;
+            img{
+                width: 5em;
+            }
+            h1{
+                font-size: 1.5em;
+                margin-top: 2em;
+            }
+            p{
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    }
+}
