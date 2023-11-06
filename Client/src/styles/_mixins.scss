@@ -1,0 +1,20 @@
+@use './variables' as *;
+
+
+@mixin secondary{
+    font-weight: 800;
+    font-style: normal;
+    font-size: 1em;
+    color: white;
+    background-color: $primary;
+    border: none;
+    padding: 0.7em 1.8em;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+@mixin sectionTitle{
+    font-weight: 700;
+    font-size: 2em;
+    margin-top: 2em;
+}

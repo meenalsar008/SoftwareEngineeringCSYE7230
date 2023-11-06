@@ -1,0 +1,31 @@
+
+@use './_MapStyles';
+@use './header';
+@use './landingHeader';
+@use './products';
+@use './extra';
+@use './footer';
+@use './singleProd.scss';
+@use './login';
+@use './shipping';
+
+@import url("https://use.typekit.net/szl2yuk.css");
+
+
+*{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+    font-family: articulat-cf, sans-serif;
+}
+
+body{
+    position: relative;
+    background-color: #ffffff;
+}
+
+html, body {
+    overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+}
