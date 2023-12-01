@@ -1,0 +1,76 @@
+@use '../styles' as *;
+
+.mobile-header {
+    display: none;
+  }
+.pc-header{
+    background-color: black;
+    padding: 1em 4em;
+    .navrow{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .navbar-brand{
+        img{
+            width: 3.5em;
+        }
+    }
+
+    .dropdown-toggle{
+        background-color: $primary;
+        border: none;
+        padding: 0.5em 1.5em;
+        font-weight: 700;
+        color: white;
+    }
+
+    .badge {
+        background-color: red;
+        position: absolute;
+        top: -20px;
+        border-radius: 100px;
+        padding: 5px 6px 3px 6px;
+        font-size: 12px;
+    }
+
+    .Login-Register{
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        a{
+            color: white;
+            font-weight: 700;
+            font-size: 1.05em;
+            margin-right: 2rem;
+            position: relative;
+        }
+        & :nth-last-child(1) {
+            margin-right: 0rem;
+          }
+          
+            .dropdown-item:hover {
+                background-color: $primary;
+            }
+    }
+}
+
+@media only screen and (max-width:767px){
+    .mobile-header{
+        background-color: black;
+        padding: 0.5em 1em;
+        .navbar-brand{
+            img{
+                width: 2.5em;
+            }
+        }
+        .fas{
+            color: white;
+        }
+        .name-button{
+            background-color: rgb(43, 43, 43);
+            border: none;
+            color: white;
+        }
+    }
+}
