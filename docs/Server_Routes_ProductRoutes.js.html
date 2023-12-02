@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Server/Routes/ProductRoutes.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Server/Routes/ProductRoutes.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import express from "express";
+import asyncHandler from "express-async-handler";
+import Product from "./../Models/ProductModel.js";
+import { admin, protect } from "./../Middleware/AuthMiddleware.js";
+
+const productRoute = express.Router();
+
+/**
+ * @route GET /api/products
+ * @group Products - Operations about products
+ * @param {string} req.query.pageNumber - The page number for pagination (optional).
+ * @param {string} req.query.keyword - A keyword to search for products (optional).
+ * @param {string} req.query.categoryId - The ID of the category to filter products (optional).
+ * @returns {Object} 200 - An array of product information with pagination details.
+ * @throws {Error} 500 - Internal server error.
+ */
+
+// GET ALL PRODUCT
+productRoute.get(
+  "/",
+  asyncHandler(async (req, res) => {
+     /**
+     * Retrieve all products.
+     * @name GetProducts
+     * @function
+     * @inner
+     * @param {Request} req - Express Request object.
+     * @param {Response} res - Express Response object.
+     * @param {string} req.query.pageNumber - The page number for pagination (optional).
+     * @param {string} req.query.keyword - A keyword to search for products (optional).
+     * @param {string} req.query.categoryId - The ID of the category to filter products (optional).
+     * @throws {Error} 500 - Internal server error.
+     * @returns {Object} 200 - An array of product information with pagination details.
+     */
+    const pageSize = 12;
+    const page = Number(req.query.pageNumber) || 1;
+    const keyword = req.query.keyword
+      ? {
+          name: {
+            $regex: req.query.keyword,
+            $options: "i",
+          },
+        }
+      : {};
+      const categoryId = req.query.categoryId
+      ? {
+          category: req.query.categoryId
+        }
+      : {};
+    const count = await Product.countDocuments({ ...keyword,...categoryId });
+    const products = await Product.find({ ...keyword,...categoryId })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+      .sort({ _id: -1 });
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+  })
+);
+
+/**
+ * @route GET /api/products/all
+ * @group Products - Operations about products
+ * @security BearerAuth
+ * @returns {Object[]} 200 - An array of all products (admin access).
+ * @throws {Error} 401 - Unauthorized if user is not an admin.
+ * @throws {Error} 500 - Internal server error.
+ */
+// ADMIN GET ALL PRODUCT WITHOUT SEARCH AND PEGINATION
+productRoute.get(
+  "/all",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+
+    /**
+     * Retrieve all products without search and pagination (admin access).
+     * @name GetProductsAll
+     * @function
+     * @inner
+     * @param {Request} req - Express Request object.
+     * @param {Response} res - Express Response object.
+     * @throws {Error} 401 - Unauthorized if user is not an admin.
+     * @returns {Object[]} 200 - An array of all products (admin access).
+     */
+    const products = await Product.find({}).sort({ _id: -1 });
+    res.json(products);
+  })
+);
+
+/**
+ * @route GET /api/products/:id
+ * @group Products - Operations about products
+ * @param {string} req.params.id.required - The ID of the product to retrieve.
+ * @returns {Product.model} 200 - The product with the specified ID.
+ * @throws {Error} 404 - If the product is not found.
+ * @throws {Error} 500 - Internal server error.
+ */
+
+// GET SINGLE PRODUCT
+productRoute.get(
+  "/:id",
+  asyncHandler(async (req, res) => {
+
+      /**
+     * Retrieve a single product by ID.
+     * @name GetProductById
+     * @function
+     * @inner
+     * @param {Request} req - Express Request object.
+     * @param {Response} res - Express Response object.
+     * @param {string} req.params.id - The ID of the product to retrieve.
+     * @throws {Error} 404 - If the product is not found.
+     * @returns {Product.model} 200 - The product with the specified ID.
+     */
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404);
+      throw new Error("Product not Found");
+    }
+  })
+);
+
+/**
+ * @route POST /api/products/:id/review
+ * @group Products - Operations about products
+ * @param {string} req.params.id.required - The ID of the product to review.
+ * @param {Object} req.body - The request body containing review details.
+ * @param {number} req.body.rating.required - The rating for the product (1-5).
+ * @param {string} req.body.comment - The review comment.
+ * @security BearerAuth
+ * @returns {Object} 201 - Success message indicating the review has been added.
+ * @throws {Error} 400 - Bad request if the product has already been reviewed by the user.
+ * @throws {Error} 404 - If the product is not found.
+ * @throws {Error} 500 - Internal server error.
+ */
+
+// PRODUCT REVIEW
+productRoute.post(
+  "/:id/review",
+  protect,
+  asyncHandler(async (req, res) => {
+
+    /**
+     * Add a review for a product by ID.
+     * @name AddProductReview
+     * @function
+     * @inner
+     * @param {Request} req - Express Request object.
+     * @param {Response} res - Express Response object.
+     * @param {string} req.params.id - The ID of the product to review.
+     * @param {Object} req.body - The request body containing review details.
+     * @param {number} req.body.rating - The rating for the product (1-5).
+     * @param {string} req.body.comment - The review comment.
+     * @throws {Error} 400 - Bad request if the product has already been reviewed by the user.
+     * @throws {Error} 404 - If the product is not found.
+     * @returns {Object} 201 - Success message indicating the review has been added.
+     */
+    const { rating, comment } = req.body;
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      const alreadyReviewed = product.reviews.find(
+        (r) => r.user.toString() === req.user._id.toString()
+      );
+      if (alreadyReviewed) {
+        res.status(400);
+        throw new Error("Product already Reviewed");
+      }
+      const review = {
+        name: req.user.name,
+        rating: Number(rating),
+        comment,
+        user: req.user._id,
+      };
+
+      product.reviews.push(review);
+      product.numReviews = product.reviews.length;
+      product.rating =
+        product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+        product.reviews.length;
+
+      await product.save();
+      res.status(201).json({ message: "Reviewed Added" });
+    } else {
+      res.status(404);
+      throw new Error("Product not Found");
+    }
+  })
+);
+
+/**
+ * @route DELETE /api/products/:id
+ * @group Products - Operations about products
+ * @param {string} req.params.id.required - The ID of the product to delete.
+ * @security BearerAuth
+ * @returns {Object} 200 - Success message indicating the product has been deleted.
+ * @throws {Error} 404 - If the product is not found.
+ * @throws {Error} 500 - Internal server error.
+ */
+
+// DELETE PRODUCT
+productRoute.delete(
+  "/:id",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+      /**
+     * Delete a product by ID.
+     * @name DeleteProduct
+     * @function
+     * @inner
+     * @param {Request} req - Express Request object.
+     * @param {Response} res - Express Response object.
+     * @param {string} req.params.id - The ID of the product to delete.
+     * @throws {Error} 404 - If the product is not found.
+     * @returns {Object} 200 - Success message indicating the product has been deleted.
+     */
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      await product.remove();
+      res.json({ message: "Product deleted" });
+    } else {
+      res.status(404);
+      throw new Error("Product not Found");
+    }
+  })
+);
+/**
+ * @route POST /api/products
+ * @group Products - Operations about products
+ * @param {string} req.body.name.required - The name of the product.
+ * @param {number} req.body.price.required - The price of the product.
+ * @param {string} req.body.description.required - The description of the product.
+ * @param {string} req.body.image.required - The URL of the product image.
+ * @param {number} req.body.countInStock.required - The count of the product in stock.
+ * @param {string} req.body.category.required - The ID of the category to which the product belongs.
+ * @security BearerAuth
+ * @returns {Product.model} 201 - The created product information.
+ * @throws {Error} 400 - Bad request if a product with the same name already exists.
+ * @throws {Error} 500 - Internal server error.
+ */
+
+// CREATE PRODUCT
+productRoute.post(
+  "/",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+     /**
+     * Create a new product.
+     * @name CreateProduct
+     * @function
+     * @inner
+     * @param {Request} req - Express Request object.
+     * @param {Response} res - Express Response object.
+     * @param {string} req.body.name - The name of the product.
+     * @param {number} req.body.price - The price of the product.
+     * @param {string} req.body.description - The description of the product.
+     * @param {string} req.body.image - The URL of the product image.
+     * @param {number} req.body.countInStock - The count of the product in stock.
+     * @param {string} req.body.category - The ID of the category to which the product belongs.
+     * @throws {Error} 400 - Bad request if a product with the same name already exists.
+     * @returns {Product.model} 201 - The created product information.
+     */
+    const { name, price, description, image, countInStock, category } = req.body;
+    const productExist = await Product.findOne({ name });
+    if (productExist) {
+      res.status(400);
+      throw new Error("Product name already exist");
+    } else {
+      const product = new Product({
+        name,
+        price,
+        description,
+        image,
+        countInStock,
+        category,
+        user: req.user._id,
+      });
+      if (product) {
+        const createdproduct = await product.save();
+        res.status(201).json(createdproduct);
+      } else {
+        res.status(400);
+        throw new Error("Invalid product data");
+      }
+    }
+  })
+);
+/**
+ * @route PUT /api/products/:id
+ * @group Products - Operations about products
+ * @param {string} req.params.id.required - The ID of the product to update.
+ * @param {string} req.body.name - The updated name of the product (optional).
+ * @param {number} req.body.price - The updated price of the product (optional).
+ * @param {string} req.body.description - The updated description of the product (optional).
+ * @param {string} req.body.image - The updated URL of the product image (optional).
+ * @param {number} req.body.countInStock - The updated count of the product in stock (optional).
+ * @security BearerAuth
+ * @returns {Product.model} 200 - The updated product information.
+ * @throws {Error} 404 - If the product is not found.
+ * @throws {Error} 500 - Internal server error.
+ */
+
+// UPDATE PRODUCT
+productRoute.put(
+  "/:id",
+  protect,
+  admin,
+  asyncHandler(async (req, res) => {
+     /**
+     * Update a product by ID.
+     * @name UpdateProduct
+     * @function
+     * @inner
+     * @param {Request} req - Express Request object.
+     * @param {Response} res - Express Response object.
+     * @param {string} req.params.id - The ID of the product to update.
+     * @param {Object} req.body - The request body containing updated product details.
+     * @param {string} req.body.name - The updated name of the product (optional).
+     * @param {number} req.body.price - The updated price of the product (optional).
+     * @param {string} req.body.description - The updated description of the product (optional).
+     * @param {string} req.body.image - The updated image URL of the product (optional).
+     * @param {number} req.body.countInStock - The updated stock count of the product (optional).
+     * @returns {Object} 200 - The updated product information.
+     * @throws {Error} 400 - Bad request if validation fails.
+     * @throws {Error} 404 - If the product is not found.
+     * @throws {Error} 500 - Internal server error.
+     */
+    const { name, price, description, image, countInStock } = req.body;
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      product.name = name || product.name;
+      product.price = price || product.price;
+      product.description = description || product.description;
+      product.image = image || product.image;
+      product.countInStock = countInStock || product.countInStock;
+
+      const updatedProduct = await product.save();
+      res.json(updatedProduct);
+    } else {
+      res.status(404);
+      throw new Error("Product not found");
+    }
+  })
+);
+export default productRoute;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html">AddProductReview</a></li><li><a href="global.html">CreateCategory</a></li><li><a href="global.html">CreateProduct</a></li><li><a href="global.html">DeleteCategory</a></li><li><a href="global.html">DeleteProduct</a></li><li><a href="global.html">GetProductById</a></li><li><a href="global.html">GetProducts</a></li><li><a href="global.html">GetProductsAll</a></li><li><a href="global.html">UpdateProduct</a></li><li><a href="global.html#categorySchema">categorySchema</a></li><li><a href="global.html#createCategory">createCategory</a></li><li><a href="global.html#deleteCategory">deleteCategory</a></li><li><a href="global.html#fetchAllCategories">fetchAllCategories</a></li><li><a href="global.html#matchPassword-Amethodtocompareagivenpasswordwiththestoredhashedpassword.Hooks:">matchPassword - A method to compare a given password with the stored hashed password.
+
+Hooks:</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Dec 01 2023 19:28:01 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
