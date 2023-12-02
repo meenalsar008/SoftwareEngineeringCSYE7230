@@ -5,7 +5,7 @@ This document describes the API endpoints for the NuMedications backend and fron
 
 The frontend API is documented using Typedoc. The generated documentation can be found at the following URL:
 
-- [Frontend Documentation](https://002747014_Dinesh.github.io/SoftwareEngineeringCSYE7230/frontend/index.html)
+- [Frontend Documentation](docs/Admin_src_services_categoryService.js.html)
 
 ## Backend API
 
