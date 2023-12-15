@@ -1,0 +1,94 @@
+@use '../styles' as *;
+
+.MapScreen{
+    display: grid;
+    grid-template-columns: 1.5fr 3fr;
+    overflow-y: hidden;
+    .Pharmas,.map{
+        height: 100vh;
+    }
+    .locMarker,.uniMarker{
+        img{
+            width: 3em;
+        }
+    }
+    h1{
+        font-weight: 700;
+        font-size: 1.8em;
+        margin: 1.5em 1em;
+    }
+    .Header{
+        height: 10vh;
+    }
+    .Cards{
+        height: 90vh;
+        overflow: scroll;
+    }
+    .Card{
+        background-color: $bgcolor;
+        padding: 1.2em 1em;
+        width: 80%;
+        border-radius: 7px;
+        margin-left: 2em;
+        margin-bottom: 2em;
+        .header{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1em;
+            .head{
+                .CardTitle{
+                    font-weight: 900;
+                    font-size: 1.2em;
+                }
+                .CardSubTitle{
+                    font-weight: 800;
+                    font-size: 1.05em;
+                    color: $cardSubHeader;
+                }
+                
+            }
+            .rating{
+                display: flex;
+                align-items: center;
+                p{
+                    font-weight: 700;
+                    font-size: 1.1em;
+                    padding-top: 0.3em;
+                    margin-right: 0.5em;
+                }
+                img{
+                    width: 1.5em;
+                    object-fit: contain;
+                }
+            }
+        }
+        .title{
+            font-weight: 800;
+            font-size: 1.1em;
+            color: $subHeader;
+        }
+        .content{
+            font-size: 1em;
+            font-weight: 700;
+            color: rgb(14, 14, 14);
+            margin-top: 0.1em;
+        }
+        
+        .details{
+            display: flex;
+            margin-top: 1.4em;
+            .phone{
+                margin-left: 2em;
+            }
+        }
+
+        a{
+            display: block;
+            width: fit-content;
+            margin-top: 2em;
+            @include secondary;
+        }
+        
+    }
+}
