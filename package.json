@@ -1,7 +1,8 @@
 {
 "scripts": {
-  "install": "cd Admin && npm install && npm start",
-  "install-client": "cd Client && npm run install && npm start",
-  "start": "cd Server && node server.js"
+  "install-client": "cd Client && npm install && npm run build && cd ..",
+  "install-admin": "cd Admin && npm install && npm run build && cd .. ",
+  "install-server": "cd Server && npm install && node server.js"
+  "heroku-postbuild": "npm run install-client && npm run install-admin"
 }
 }
